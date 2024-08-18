@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.38"
 discord-rich-presence = "0.2.4"
+tray-item = "0.10.0"
