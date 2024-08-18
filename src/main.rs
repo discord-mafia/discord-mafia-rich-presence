@@ -5,7 +5,7 @@ use discord_rich_presence::{
 };
 use std::{thread, time::Duration};
 
-fn main() {
+fn presence() {
     let mut client = match DiscordIpcClient::new("1143833637767348304") {
         Ok(client) => client,
         Err(err) => {
@@ -13,6 +13,8 @@ fn main() {
             return;
         }
     };
+
+    let timestamp = Timestamps::new().start(chrono::Utc::now().timestamp());
 
     loop {
         match client.connect() {
@@ -29,17 +31,18 @@ fn main() {
         loop {
             match client.set_activity(
                 activity::Activity::new()
-                    .state("discord.gg/social-deduction")
                     .details("Wanna play all things mafia?")
-                    .timestamps(Timestamps::new().start(chrono::Utc::now().timestamp()))
+                    .timestamps(timestamp.clone())
                     .buttons(vec![Button::new(
-                        "Join Discord",
+                        "Join Discord Mafia",
                         "https://discord.gg/social-deduction",
                     )])
                     .assets(
                         Assets::new()
                             .large_image("discordmafia")
-                            .large_text("Join Discord Mafia"),
+                            .large_text("Join Discord Mafia")
+                            .small_image("cog_icon")
+                            .small_text("We have our own bot!"),
                     ),
             ) {
                 Ok(()) => println!("Set activity"),
@@ -52,4 +55,8 @@ fn main() {
             thread::sleep(Duration::from_secs(15));
         }
     }
+}
+
+fn main() {
+    presence();
 }
