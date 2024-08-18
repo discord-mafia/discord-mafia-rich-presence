@@ -1,8 +1,12 @@
-use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
+use chrono;
+use discord_rich_presence::{
+    activity::{self, Assets, Button, Timestamps},
+    DiscordIpc, DiscordIpcClient,
+};
 use std::{thread, time::Duration};
 
 fn main() {
-    let mut client = match DiscordIpcClient::new("843514276383031296") {
+    let mut client = match DiscordIpcClient::new("1143833637767348304") {
         Ok(client) => client,
         Err(err) => {
             println!("Failed to create client: {}", err);
@@ -17,21 +21,35 @@ fn main() {
             }
             Err(err) => {
                 println!("Failed to connect: {}", err);
-                thread::sleep(Duration::from_secs(5)); // wait 5 seconds before retrying
+                thread::sleep(Duration::from_secs(5));
                 continue;
             }
         }
 
         loop {
-            match client.set_activity(activity::Activity::new().state("foo").details("bar")) {
+            match client.set_activity(
+                activity::Activity::new()
+                    .state("discord.gg/social-deduction")
+                    .details("Wanna play all things mafia?")
+                    .timestamps(Timestamps::new().start(chrono::Utc::now().timestamp()))
+                    .buttons(vec![Button::new(
+                        "Join Discord",
+                        "https://discord.gg/social-deduction",
+                    )])
+                    .assets(
+                        Assets::new()
+                            .large_image("discordmafia")
+                            .large_text("Join Discord Mafia"),
+                    ),
+            ) {
                 Ok(()) => println!("Set activity"),
                 Err(err) => {
                     println!("Failed to set activity: {}", err);
-                    break; // if setting activity fails, break out of the loop and try to reconnect
+                    break;
                 }
             }
 
-            thread::sleep(Duration::from_secs(15)); // update activity every 15 seconds
+            thread::sleep(Duration::from_secs(15));
         }
     }
 }
