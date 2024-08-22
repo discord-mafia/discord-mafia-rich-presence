@@ -8,3 +8,9 @@ chrono = "0.4.38"
 dirs = "5.0.1"
 discord-rich-presence = "0.2.4"
 tray-item = "0.10.0"
+
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+
+[target.i686-pc-windows-gnu]
+linker = "i686-w64-mingw32-gcc"

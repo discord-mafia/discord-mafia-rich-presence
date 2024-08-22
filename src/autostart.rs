@@ -7,7 +7,8 @@ pub fn is_autostart_enabled() -> Result<bool, Box<dyn std::error::Error>> {
     {
         let startup_dir =
             std::env::var("APPDATA")? + r"\Microsoft\Windows\Start Menu\Programs\Startup";
-        let shortcut_path = PathBuf::from(startup_dir).join(format!("{}.lnk", PLIST_NAME));
+        let shortcut_path =
+            std::path::PathBuf::from(startup_dir).join(format!("{}.lnk", PLIST_NAME));
 
         Ok(shortcut_path.exists())
     }
@@ -25,12 +26,14 @@ pub fn is_autostart_enabled() -> Result<bool, Box<dyn std::error::Error>> {
 pub fn toggle_startup(enable: bool) -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(target_os = "windows")]
     {
-        let startup_dir = env::var("APPDATA")? + r"\Microsoft\Windows\Start Menu\Programs\Startup";
-        let shortcut_path = PathBuf::from(startup_dir).join(format!("{}.lnk", PLIST_NAME));
+        let startup_dir =
+            std::env::var("APPDATA")? + r"\Microsoft\Windows\Start Menu\Programs\Startup";
+        let shortcut_path =
+            std::path::PathBuf::from(startup_dir).join(format!("{}.lnk", PLIST_NAME));
 
         if enable {
             if !shortcut_path.exists() {
-                let executable_path = env::current_exe()?;
+                let executable_path = std::env::current_exe()?;
                 create_shortcut(&shortcut_path, &executable_path)?;
             }
         } else {
@@ -82,8 +85,8 @@ pub fn toggle_startup(enable: bool) -> Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(target_os = "windows")]
 fn create_shortcut(
-    shortcut_path: &path::PathBuf,
-    target_path: &path::PathBuf,
+    shortcut_path: &std::path::PathBuf,
+    target_path: &std::path::PathBuf,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let wsh = r#"
         Set oWS = WScript.CreateObject("WScript.Shell")

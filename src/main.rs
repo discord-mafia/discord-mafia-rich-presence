@@ -1,6 +1,6 @@
 mod autostart;
+mod tray;
 
-use autostart::{is_autostart_enabled, toggle_startup};
 use chrono;
 use discord_rich_presence::{
     activity::{self, Assets, Button, Timestamps},
@@ -14,9 +14,8 @@ use std::{
     thread,
     time::Duration,
 };
-use tray_item::{IconSource, TIError, TrayItem};
 
-const ICON: &[u8] = include_bytes!("../res/icon.png");
+pub const ICON: &[u8] = include_bytes!("../res/icon.png");
 
 fn presence(terminate: Arc<AtomicBool>) {
     let mut client = match DiscordIpcClient::new("1143833637767348304") {
@@ -80,58 +79,6 @@ fn presence(terminate: Arc<AtomicBool>) {
     }
 }
 
-fn tray(terminate: Arc<AtomicBool>) -> Result<(), TIError> {
-    let mut tray = TrayItem::new(
-        "Mafia Engine",
-        IconSource::Data {
-            height: 512,
-            width: 512,
-            data: ICON.to_vec(),
-        },
-    )?;
-
-    let inner = tray.inner_mut();
-
-    inner.add_menu_item("Enable Auto-Start", move || {
-        let is_enabled = is_autostart_enabled().unwrap_or(false);
-        if !is_enabled {
-            if let Err(err) = toggle_startup(!is_enabled) {
-                println!("Failed to toggle startup: {}", err);
-            } else {
-                println!(
-                    "Startup {}",
-                    if !is_enabled { "enabled" } else { "disabled" }
-                );
-            }
-        }
-    })?;
-
-    inner.add_menu_item("Disable Auto-Start", move || {
-        let is_enabled = is_autostart_enabled().unwrap_or(false);
-        if is_enabled {
-            if let Err(err) = toggle_startup(!is_enabled) {
-                println!("Failed to toggle startup: {}", err);
-            } else {
-                println!(
-                    "Startup {}",
-                    if !is_enabled { "enabled" } else { "disabled" }
-                );
-            }
-        }
-    })?;
-
-    inner.add_quit_item("Quit");
-    inner.display();
-
-    let terminate_clone = Arc::clone(&terminate);
-    tray.add_menu_item("Quit", move || {
-        terminate_clone.store(true, Ordering::SeqCst);
-        std::process::exit(0);
-    })?;
-
-    Ok(())
-}
-
 fn main() {
     let terminate = Arc::new(AtomicBool::new(false));
 
@@ -140,7 +87,7 @@ fn main() {
         presence(terminate_presence);
     });
 
-    match tray(terminate) {
+    match tray::tray(terminate) {
         Ok(_) => {
             println!("Tray icon created successfully");
         }
