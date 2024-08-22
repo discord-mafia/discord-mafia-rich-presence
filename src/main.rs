@@ -13,6 +13,8 @@ use std::{
 };
 use tray_item::{IconSource, TIError, TrayItem};
 
+const ICON: &[u8; 30756] = include_bytes!("../res/icon.png");
+
 fn presence(terminate: Arc<AtomicBool>) {
     let mut client = match DiscordIpcClient::new("1143833637767348304") {
         Ok(client) => client,
@@ -76,7 +78,14 @@ fn presence(terminate: Arc<AtomicBool>) {
 }
 
 fn tray(terminate: Arc<AtomicBool>) -> Result<(), TIError> {
-    let mut tray = TrayItem::new("Mafia Engine", IconSource::Resource(""))?;
+    let mut tray = TrayItem::new(
+        "Mafia Engine",
+        IconSource::Data {
+            height: 512,
+            width: 512,
+            data: ICON.to_vec(),
+        },
+    )?;
 
     let inner = tray.inner_mut();
     inner.add_quit_item("Quit");

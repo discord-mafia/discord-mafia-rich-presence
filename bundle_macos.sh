@@ -2,6 +2,7 @@
 
 APP_NAME="Discord Mafia Advertisement"
 BINARY_NAME="discord-rich-presence-rust"
+ICON_NAME="icon"
 PROJECT_DIR=$(pwd)
 RELEASE_DIR="$PROJECT_DIR/target/release"
 APP_DIR="$RELEASE_DIR/$APP_NAME.app"
@@ -10,6 +11,7 @@ MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 PLIST_FILE="$CONTENTS_DIR/Info.plist"
 BUNDLE_DIR="$PROJECT_DIR/bundle"
+ICON_PATH="$PROJECT_DIR/res/$ICON_NAME.icns"
 
 cargo build --release
 
@@ -26,6 +28,8 @@ mkdir -p "$MACOS_DIR"
 mkdir -p "$RESOURCES_DIR"
 
 cp "$RELEASE_DIR/$BINARY_NAME" "$MACOS_DIR/"
+
+cp "$ICON_PATH" "$RESOURCES_DIR/"
 
 cat <<EOL > "$PLIST_FILE"
 <?xml version="1.0" encoding="UTF-8"?>
@@ -44,6 +48,8 @@ cat <<EOL > "$PLIST_FILE"
     <string>APPL</string>
     <key>CFBundleSignature</key>
     <string>????</string>
+    <key>CFBundleIconFile</key>
+    <string>$ICON_NAME</string>
 </dict>
 </plist>
 EOL
