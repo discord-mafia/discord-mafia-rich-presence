@@ -13,7 +13,7 @@ use std::{
 };
 use tray_item::{IconSource, TIError, TrayItem};
 
-const ICON: &[u8; 30756] = include_bytes!("../res/icon.png");
+const ICON: &[u8] = include_bytes!("../res/icon.png");
 
 fn presence(terminate: Arc<AtomicBool>) {
     let mut client = match DiscordIpcClient::new("1143833637767348304") {
