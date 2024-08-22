@@ -39,7 +39,7 @@ cat <<EOL > "$PLIST_FILE"
     <key>CFBundleExecutable</key>
     <string>$BINARY_NAME</string>
     <key>CFBundleIdentifier</key>
-    <string>com.example.$APP_NAME</string>
+    <string>com.mafiaengine.$APP_NAME</string>
     <key>CFBundleName</key>
     <string>$APP_NAME</string>
     <key>CFBundleVersion</key>

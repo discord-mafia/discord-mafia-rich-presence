@@ -1,3 +1,6 @@
+mod autostart;
+
+use autostart::{is_autostart_enabled, toggle_startup};
 use chrono;
 use discord_rich_presence::{
     activity::{self, Assets, Button, Timestamps},
@@ -88,6 +91,35 @@ fn tray(terminate: Arc<AtomicBool>) -> Result<(), TIError> {
     )?;
 
     let inner = tray.inner_mut();
+
+    inner.add_menu_item("Enable Auto-Start", move || {
+        let is_enabled = is_autostart_enabled().unwrap_or(false);
+        if !is_enabled {
+            if let Err(err) = toggle_startup(!is_enabled) {
+                println!("Failed to toggle startup: {}", err);
+            } else {
+                println!(
+                    "Startup {}",
+                    if !is_enabled { "enabled" } else { "disabled" }
+                );
+            }
+        }
+    })?;
+
+    inner.add_menu_item("Disable Auto-Start", move || {
+        let is_enabled = is_autostart_enabled().unwrap_or(false);
+        if is_enabled {
+            if let Err(err) = toggle_startup(!is_enabled) {
+                println!("Failed to toggle startup: {}", err);
+            } else {
+                println!(
+                    "Startup {}",
+                    if !is_enabled { "enabled" } else { "disabled" }
+                );
+            }
+        }
+    })?;
+
     inner.add_quit_item("Quit");
     inner.display();
 
