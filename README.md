@@ -1,6 +1,6 @@
 # Discord Mafia Rich Presence
 
-A rust program to "advertise" the discord mafia server as a discord rich presence/
+A rust program to "advertise" the discord mafia server as a discord rich presence
 
 ## Getting Started
 
